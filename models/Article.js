@@ -19,6 +19,10 @@ var ArticleSchema = new Schema({
   note: {
     type: Schema.Types.ObjectId,
     ref: "Note"
+  },
+  articleScrapped: {
+    type: Date,
+    default: Date.now
   }
 });
 

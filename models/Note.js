@@ -12,6 +12,10 @@ var NoteSchema = new Schema({
   // Just a string
   body: {
     type: String
+  },
+  userCreated: {
+    type: Date,
+    default: Date.now
   }
 });
 

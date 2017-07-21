@@ -30,8 +30,8 @@ app.use(bodyParser.urlencoded({
 app.use(express.static("public"));
 
 // Database configuration with mongoose
-mongoose.connect("mongodb://heroku_fw06lb70:c5g1g1sipka5q52uv24c3r9mj@ds115583.mlab.com:15583/heroku_fw06lb70")
-// mongoose.connect("mongodb://localhost/newsArticlesdb");
+// mongoose.connect("mongodb://heroku_fw06lb70:c5g1g1sipka5q52uv24c3r9mj@ds115583.mlab.com:15583/heroku_fw06lb70")
+mongoose.connect("mongodb://localhost/cnnArticles");
 var db = mongoose.connection;
 
 // Show any mongoose errors
@@ -43,11 +43,6 @@ db.on("error", function(error) {
 db.once("open", function() {
   console.log("Mongoose connection successful.");
 });
-
-
-
-
-
 
 
 
@@ -71,7 +66,7 @@ app.get("/scrape", function(req, res) {
       // Add the text and href of every link, and save them as properties of the result object
       result.title = $(this).children("a").text();
 
-      result.link = $(this).children("a").attr("href");
+      result.link = "http://www.cnn.com" + $(this).children("a").attr("href");
 
       // Using our Article model, create a new entry
       // This effectively passes the result object to the entry (and the title and link)
@@ -85,18 +80,47 @@ app.get("/scrape", function(req, res) {
         }
         // Or log the doc
         else {
-          console.log(doc);
+          // console.log(doc);
+          // Article.findOneAndUpdate({ "_id": req.params.id }, { "note": doc._id })
+          // Execute the above query
+          // .exec(function(err, doc) {
+          // // Log any errors
+          // if (err) {
+          //   console.log(err);
+          // }
+          // else {
+          //   // Or send the document to the browser
+          //   res.send(doc);
+          // }
+          // });
         }
       });
-    });
+    })
   });
   // Tell the browser that we finished scraping the text
-  console.log("Articles Scrapped!!");
+  console.log("here i am")
+  res.send("articles saved");
+
 });
 
 
 
 // This will get the articles we scraped from the mongoDB
+app.get("/articles", function(req, res) {
+  // Grab every doc in the Articles array
+  Article.find({}, function(error, doc) {
+    // Log any errors
+    if (error) {
+      console.log(error);
+    }
+    // Or send the doc to the browser as a json object
+    else {
+      res.json(doc);
+    }
+  });
+});
+
+
 app.get("/articles", function(req, res) {
   // Grab every doc in the Articles array
   Article.find({}, function(error, doc) {
